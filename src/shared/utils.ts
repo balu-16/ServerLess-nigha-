@@ -140,39 +140,28 @@ export const generateOTP = (length: number = 6): string => {
   return otp
 }
 
-// IST Timezone offset (UTC+5:30)
-const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000
+// Note: Database timezone is set to IST (Asia/Kolkata)
+// Use regular Date() for storage - Supabase handles timezone conversion
 
-// Get current time in IST
+// Get current time (database stores in IST automatically)
 export const getISTNow = (): Date => {
-  const now = new Date()
-  return new Date(now.getTime() + IST_OFFSET_MS)
+  return new Date()
 }
 
 // Get IST timestamp as ISO string
 export const getISTTimestamp = (): string => {
-  return getISTNow().toISOString()
+  return new Date().toISOString()
 }
 
-// Convert UTC date to IST
-export const toIST = (date: Date): Date => {
-  return new Date(date.getTime() + IST_OFFSET_MS)
-}
-
-// Convert IST date to UTC (for database storage comparison)
-export const fromIST = (istDate: Date): Date => {
-  return new Date(istDate.getTime() - IST_OFFSET_MS)
-}
-
-// Calculate OTP expiry time (5 minutes from now in IST)
+// Calculate OTP expiry time (10 minutes from now)
 export const getOtpExpiryTime = (): Date => {
-  const now = getISTNow()
-  return new Date(now.getTime() + 5 * 60 * 1000) // 5 minutes from IST now
+  const now = new Date()
+  return new Date(now.getTime() + 10 * 60 * 1000) // 10 minutes
 }
 
-// Check if OTP is expired (comparing in IST)
+// Check if OTP is expired
 export const isOtpExpired = (expiryTime: Date): boolean => {
-  return getISTNow() > expiryTime
+  return new Date() > expiryTime
 }
 
 // Logger utility

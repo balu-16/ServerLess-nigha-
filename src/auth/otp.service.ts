@@ -2,12 +2,6 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SmsService } from './sms.service';
 
-// IST offset: UTC+5:30
-const getISTNow = (): Date => {
-  const now = new Date();
-  return new Date(now.getTime() + 5.5 * 60 * 60 * 1000);
-};
-
 @Injectable()
 export class OtpService {
   constructor(
@@ -22,8 +16,8 @@ export class OtpService {
 
   // Store OTP in database
   async storeOTP(phoneNumber: string, otp: string, name?: string): Promise<void> {
-    // Set expiration time to 10 minutes from now (IST)
-    const expiresAt = new Date(getISTNow().getTime() + 10 * 60 * 1000);
+    // Set expiration time to 10 minutes from now
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     // Invalidate any existing OTPs for this phone number
     await this.prisma.oTP.updateMany({
@@ -56,7 +50,7 @@ export class OtpService {
         otp,
         isUsed: false,
         expiresAt: {
-          gt: getISTNow(),
+          gt: new Date(),
         },
       },
     });
@@ -96,7 +90,7 @@ export class OtpService {
     await this.prisma.oTP.deleteMany({
       where: {
         expiresAt: {
-          lt: getISTNow(),
+          lt: new Date(),
         },
       },
     });
