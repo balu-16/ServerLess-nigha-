@@ -8,7 +8,8 @@ import {
   validateRequiredFields,
   Logger,
   isWarmupRequest,
-  handleWarmup
+  handleWarmup,
+  getISTNow
 } from '../shared/utils'
 
 interface TrackDeviceRequest {
@@ -112,7 +113,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       })
     }
 
-    const trackedAt = new Date()
+    const trackedAt = getISTNow()
 
     // Save tracking data to database
     const trackingRecord = await prisma.tracking.create({

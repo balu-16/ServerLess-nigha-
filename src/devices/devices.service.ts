@@ -3,6 +3,12 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TrackDeviceDto } from './dto/track-device.dto';
 import { TrackingGateway } from './tracking.gateway';
 
+// IST offset: UTC+5:30
+const getISTNow = (): Date => {
+  const now = new Date();
+  return new Date(now.getTime() + 5.5 * 60 * 60 * 1000);
+};
+
 @Injectable()
 export class DevicesService {
   constructor(
@@ -146,7 +152,7 @@ async findAll() {
     console.log(`🔗 Assigning device ${code} to user ${userId}`);
     return this.prisma.device.updateMany({
     where: { code, assignedTo: null },
-    data: { assignedTo: userId, assignedAt: new Date(), status: 'ACTIVE', }
+    data: { assignedTo: userId, assignedAt: getISTNow(), status: 'ACTIVE', }
   });
   }
 

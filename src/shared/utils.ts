@@ -140,15 +140,39 @@ export const generateOTP = (length: number = 6): string => {
   return otp
 }
 
-// Calculate OTP expiry time (5 minutes from now)
-export const getOtpExpiryTime = (): Date => {
+// IST Timezone offset (UTC+5:30)
+const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000
+
+// Get current time in IST
+export const getISTNow = (): Date => {
   const now = new Date()
-  return new Date(now.getTime() + 5 * 60 * 1000) // 5 minutes
+  return new Date(now.getTime() + IST_OFFSET_MS)
 }
 
-// Check if OTP is expired
+// Get IST timestamp as ISO string
+export const getISTTimestamp = (): string => {
+  return getISTNow().toISOString()
+}
+
+// Convert UTC date to IST
+export const toIST = (date: Date): Date => {
+  return new Date(date.getTime() + IST_OFFSET_MS)
+}
+
+// Convert IST date to UTC (for database storage comparison)
+export const fromIST = (istDate: Date): Date => {
+  return new Date(istDate.getTime() - IST_OFFSET_MS)
+}
+
+// Calculate OTP expiry time (5 minutes from now in IST)
+export const getOtpExpiryTime = (): Date => {
+  const now = getISTNow()
+  return new Date(now.getTime() + 5 * 60 * 1000) // 5 minutes from IST now
+}
+
+// Check if OTP is expired (comparing in IST)
 export const isOtpExpired = (expiryTime: Date): boolean => {
-  return new Date() > expiryTime
+  return getISTNow() > expiryTime
 }
 
 // Logger utility
