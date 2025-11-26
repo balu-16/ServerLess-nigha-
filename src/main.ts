@@ -2,9 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { PrismaService } from './prisma/prisma.service';
-import { ExpressAdapter } from '@nestjs/platform-express';
-const express = require('express');
 
 let cachedApp: any;
 
@@ -74,8 +71,6 @@ async function bootstrap() {
     },
   });
 
-  const prismaService = app.get(PrismaService);
-  // await prismaService.enableShutdownHooks(app); // Removed for serverless compatibility
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.setGlobalPrefix('api');
   
