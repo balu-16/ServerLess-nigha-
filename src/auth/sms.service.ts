@@ -5,16 +5,31 @@ import { firstValueFrom } from 'rxjs';
 @Injectable()
 export class SmsService {
   private readonly logger = new Logger(SmsService.name);
-  private readonly smsApiUrl = 'http://43.252.88.250/index.php/smsapi/httpapi/';
+  private readonly smsApiUrl = process.env.SMS_API_URL ?? '';
   private readonly smsConfig = {
-    secret: 'xledocqmXkNPrTesuqWr',
-    sender: 'NIGHAI',
-    tempid: '1207174264191607433',
-    route: 'TA',
-    msgtype: '1'
+    secret: process.env.SMS_SECRET ?? '',
+    sender: process.env.SMS_SENDER ?? '',
+    tempid: process.env.SMS_TEMPID ?? '',
+    route: process.env.SMS_ROUTE ?? 'TA',
+    msgtype: process.env.SMS_MSGTYPE ?? '1'
   };
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService) {
+    this.validateConfig();
+  }
+
+  private validateConfig() {
+    const missing: string[] = [];
+    if (!this.smsApiUrl) missing.push('SMS_API_URL');
+    if (!this.smsConfig.secret) missing.push('SMS_SECRET');
+    if (!this.smsConfig.sender) missing.push('SMS_SENDER');
+    if (!this.smsConfig.tempid) missing.push('SMS_TEMPID');
+
+    if (missing.length) {
+      this.logger.error(`Missing SMS configuration keys: ${missing.join(', ')}`);
+      throw new Error('SMS configuration is incomplete. Check environment variables.');
+    }
+  }
 
   async sendOTP(phoneNumber: string, otp: string): Promise<void> {
     try {
