@@ -24,7 +24,7 @@ export class PrismaService implements OnModuleInit {
 
   // User model operations
   user = {
-    findUnique: async (args: { where: { id?: number; phoneNumber?: string }; select?: any }) => {
+    findUnique: async (args: { where: { id?: number; phoneNumber?: string }; select?: any }): Promise<any> => {
       const selectFields = args.select 
         ? Object.keys(args.select).filter(k => args.select[k]).join(',') 
         : '*';
@@ -42,7 +42,7 @@ export class PrismaService implements OnModuleInit {
       return data;
     },
 
-    findMany: async (args?: { where?: any; select?: any; orderBy?: any }) => {
+    findMany: async (args?: { where?: any; select?: any; orderBy?: any }): Promise<any> => {
       let selectFields = '*';
       if (args?.select) {
         selectFields = Object.keys(args.select).filter(k => args.select[k]).join(',');
@@ -65,7 +65,7 @@ export class PrismaService implements OnModuleInit {
       return data || [];
     },
 
-    create: async (args: { data: any }) => {
+    create: async (args: { data: any }): Promise<any> => {
       const { data, error } = await this.supabase
         .from('User')
         .insert(args.data)
@@ -75,7 +75,7 @@ export class PrismaService implements OnModuleInit {
       return data;
     },
 
-    update: async (args: { where: { id?: number; phoneNumber?: string }; data: any }) => {
+    update: async (args: { where: { id?: number; phoneNumber?: string }; data: any }): Promise<any> => {
       let query = this.supabase.from('User').update(args.data);
       
       if (args.where.id) {
@@ -90,7 +90,7 @@ export class PrismaService implements OnModuleInit {
       return data;
     },
 
-    delete: async (args: { where: { id: number } }) => {
+    delete: async (args: { where: { id: number } }): Promise<any> => {
       const { error } = await this.supabase
         .from('User')
         .delete()
@@ -102,7 +102,7 @@ export class PrismaService implements OnModuleInit {
 
   // OTP model operations  
   oTP = {
-    create: async (args: { data: any }) => {
+    create: async (args: { data: any }): Promise<any> => {
       const { data, error } = await this.supabase
         .from('OTP')
         .insert(args.data)
@@ -112,7 +112,7 @@ export class PrismaService implements OnModuleInit {
       return data;
     },
 
-    findFirst: async (args: { where: any; orderBy?: any }) => {
+    findFirst: async (args: { where: any; orderBy?: any }): Promise<any> => {
       let query = this.supabase.from('OTP').select('*');
       
       if (args.where.phoneNumber) {
@@ -141,7 +141,7 @@ export class PrismaService implements OnModuleInit {
       return data?.[0] || null;
     },
 
-    update: async (args: { where: { id: number }; data: any }) => {
+    update: async (args: { where: { id: number }; data: any }): Promise<any> => {
       const { data, error } = await this.supabase
         .from('OTP')
         .update(args.data)
@@ -152,7 +152,7 @@ export class PrismaService implements OnModuleInit {
       return data;
     },
 
-    updateMany: async (args: { where: { phoneNumber?: string; isUsed?: boolean }; data: any }) => {
+    updateMany: async (args: { where: { phoneNumber?: string; isUsed?: boolean }; data: any }): Promise<any> => {
       let query = this.supabase.from('OTP').update(args.data);
       
       if (args.where.phoneNumber) {
@@ -167,7 +167,7 @@ export class PrismaService implements OnModuleInit {
       return { count: data?.length || 0 };
     },
 
-    deleteMany: async (args: { where: { expiresAt?: { lt: Date } } }) => {
+    deleteMany: async (args: { where: { expiresAt?: { lt: Date } } }): Promise<any> => {
       let query = this.supabase.from('OTP').delete();
       
       if (args.where.expiresAt?.lt) {
@@ -182,7 +182,7 @@ export class PrismaService implements OnModuleInit {
 
   // Device model operations
   device = {
-    findUnique: async (args: { where: { id?: number; code?: string; iotSimNumber?: string }; select?: any; include?: any }) => {
+    findUnique: async (args: { where: { id?: number; code?: string; iotSimNumber?: string }; select?: any; include?: any }): Promise<any> => {
       let selectFields = '*';
       if (args.select) {
         selectFields = Object.keys(args.select).filter(k => args.select[k]).join(',');
@@ -208,7 +208,7 @@ export class PrismaService implements OnModuleInit {
       return data;
     },
 
-    findMany: async (args?: { where?: any; include?: any; select?: any }) => {
+    findMany: async (args?: { where?: any; include?: any; select?: any }): Promise<any> => {
       let selectFields = '*';
       if (args?.include?.user) {
         selectFields = '*, user:User!assignedTo(id, name)';
@@ -225,7 +225,7 @@ export class PrismaService implements OnModuleInit {
       return data || [];
     },
 
-    create: async (args: { data: any }) => {
+    create: async (args: { data: any }): Promise<any> => {
       const { data, error } = await this.supabase
         .from('Device')
         .insert(args.data)
@@ -235,7 +235,7 @@ export class PrismaService implements OnModuleInit {
       return data;
     },
 
-    createMany: async (args: { data: any[] }) => {
+    createMany: async (args: { data: any[] }): Promise<any> => {
       const { data, error } = await this.supabase
         .from('Device')
         .insert(args.data)
@@ -244,7 +244,7 @@ export class PrismaService implements OnModuleInit {
       return { count: data?.length || 0 };
     },
 
-    update: async (args: { where: { id?: number; code?: string }; data: any }) => {
+    update: async (args: { where: { id?: number; code?: string }; data: any }): Promise<any> => {
       let query = this.supabase.from('Device').update(args.data);
       
       if (args.where.id) {
@@ -259,7 +259,7 @@ export class PrismaService implements OnModuleInit {
       return data;
     },
 
-    updateMany: async (args: { where: { code?: string; assignedTo?: null }; data: any }) => {
+    updateMany: async (args: { where: { code?: string; assignedTo?: null }; data: any }): Promise<any> => {
       let query = this.supabase.from('Device').update(args.data);
       
       if (args.where.code) {
@@ -277,7 +277,7 @@ export class PrismaService implements OnModuleInit {
 
   // Tracking model operations
   tracking = {
-    create: async (args: { data: any }) => {
+    create: async (args: { data: any }): Promise<any> => {
       const { data, error } = await this.supabase
         .from('Tracking')
         .insert(args.data)
@@ -287,8 +287,12 @@ export class PrismaService implements OnModuleInit {
       return data;
     },
 
-    findMany: async (args?: { where?: any; orderBy?: any }) => {
-      let query = this.supabase.from('Tracking').select('*');
+    findMany: async (args?: { where?: any; orderBy?: any; take?: number; skip?: number; select?: any }): Promise<any> => {
+      let selectFields = '*';
+      if (args?.select) {
+        selectFields = Object.keys(args.select).filter(k => args.select[k]).join(',');
+      }
+      let query = this.supabase.from('Tracking').select(selectFields);
       
       if (args?.where?.deviceCode) {
         query = query.eq('deviceCode', args.where.deviceCode);
@@ -306,15 +310,36 @@ export class PrismaService implements OnModuleInit {
         query = query.order(field, { ascending: !direction });
       }
       
+      if (args?.take) query = query.limit(args.take);
+      if (args?.skip) query = query.range(args.skip, args.skip + (args.take || 100) - 1);
+      
       const { data, error } = await query;
       if (error) throw error;
       return data || [];
+    },
+
+    count: async (args?: { where?: any }): Promise<number> => {
+      let query = this.supabase.from('Tracking').select('*', { count: 'exact', head: true });
+      
+      if (args?.where?.deviceCode) {
+        query = query.eq('deviceCode', args.where.deviceCode);
+      }
+      if (args?.where?.trackedAt?.gte) {
+        query = query.gte('trackedAt', args.where.trackedAt.gte.toISOString());
+      }
+      if (args?.where?.trackedAt?.lte) {
+        query = query.lte('trackedAt', args.where.trackedAt.lte.toISOString());
+      }
+      
+      const { count, error } = await query;
+      if (error) throw error;
+      return count || 0;
     },
   };
 
   // SharedDevice model operations
   sharedDevice = {
-    findFirst: async (args: { where: { deviceId?: number; userId?: number } }) => {
+    findFirst: async (args: { where: { deviceId?: number; userId?: number } }): Promise<any> => {
       let query = this.supabase.from('SharedDevice').select('*');
       
       if (args.where.deviceId) {
@@ -331,7 +356,7 @@ export class PrismaService implements OnModuleInit {
       return data?.[0] || null;
     },
 
-    findUnique: async (args: { where: { deviceId_userId: { deviceId: number; userId: number } } }) => {
+    findUnique: async (args: { where: { deviceId_userId: { deviceId: number; userId: number } } }): Promise<any> => {
       const { data, error } = await this.supabase
         .from('SharedDevice')
         .select('*')
@@ -342,7 +367,7 @@ export class PrismaService implements OnModuleInit {
       return data;
     },
 
-    findMany: async (args?: { where?: { userId?: number; deviceId?: number }; include?: any }) => {
+    findMany: async (args?: { where?: { userId?: number; deviceId?: number }; include?: any }): Promise<any> => {
       let selectFields = '*';
       if (args?.include?.device) {
         selectFields = '*, device:Device(*)';
@@ -370,7 +395,7 @@ export class PrismaService implements OnModuleInit {
       return data || [];
     },
 
-    create: async (args: { data: { deviceId: number; userId: number } }) => {
+    create: async (args: { data: { deviceId: number; userId: number } }): Promise<any> => {
       const { data, error } = await this.supabase
         .from('SharedDevice')
         .insert(args.data)
@@ -380,7 +405,7 @@ export class PrismaService implements OnModuleInit {
       return data;
     },
 
-    delete: async (args: { where: { deviceId_userId: { deviceId: number; userId: number } } }) => {
+    delete: async (args: { where: { deviceId_userId: { deviceId: number; userId: number } } }): Promise<any> => {
       const { error } = await this.supabase
         .from('SharedDevice')
         .delete()

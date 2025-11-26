@@ -16,7 +16,7 @@ import { RolesGuard } from './roles.guard';
     HttpModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'fallback-secret-key',
-      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN || '7d' },
+      signOptions: { expiresIn: '7d' },
     }),
   ],
   controllers: [AuthController],

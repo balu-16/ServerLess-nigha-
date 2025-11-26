@@ -168,7 +168,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       tokenPayload,
       jwtSecret,
       {
-        expiresIn: process.env.JWT_EXPIRES_IN || '7d'
+        expiresIn: '7d'
       }
     )
 
